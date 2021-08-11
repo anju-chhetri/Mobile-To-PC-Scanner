@@ -1,12 +1,12 @@
- 
 import cv2
 from pathlib import Path
 from PIL import Image
 import os
 import numpy as np
+import argparse
 from Scan_effect import *
 #cap = cv2.VideoCapture('rtsp://admin:123456@192.168.1.103:8080/H264?ch=1&subtype=0')
-def basic():
+def basic(pdf_name):
     url = 'http://192.168.1.103:8080/video'
     path = str(Path.home())
     path = path + "/Desktop/Mobile-to-PC-Scanner/"
@@ -20,7 +20,7 @@ def basic():
     if(not pdf_exists):
         os.mkdir(pdf_folder)
     image_list = []
-    vid = cv2.VideoCapture(url)
+    vid = cv2.VideoCapture(0)
     img_count = len(os.listdir(folder))
     count_increase = img_count
     while(True):
@@ -53,7 +53,7 @@ def basic():
 
     first_image = scan_image_list[0]
     scan_image_list = scan_image_list[1:]
-    pdf = pdf_folder +"/test.pdf"
+    pdf = pdf_folder +"/"+ pdf_name
     first_image.save(pdf, save_all = True, append_images = scan_image_list)
 
 
@@ -135,4 +135,7 @@ def process_image(image):
     return scanned
 
 if __name__ == "__main__":
-    basic()
+    parser  = argparse.ArgumentParser()
+    parser.add_argument("pdf_name", help = "Name of the pdf. Must include.pdf extension", type = str)
+    args = parser.parse_args()
+    basic(args.pdf_name)
