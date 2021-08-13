@@ -7,7 +7,7 @@ import argparse
 from Scan_effect import *
 #cap = cv2.VideoCapture('rtsp://admin:123456@192.168.1.103:8080/H264?ch=1&subtype=0')
 def basic(pdf_name, orientation, perspective):
-    url = 'http://192.168.1.103:8080/video'
+    url = 'your camera IP/video'
     path = str(Path.home())
     path = path + "/Desktop/Mobile-to-PC-Scanner/"
     folder_name = "PLS"
