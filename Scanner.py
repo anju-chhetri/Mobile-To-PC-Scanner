@@ -6,22 +6,26 @@ import numpy as np
 import argparse
 from Scan_effect import *
 #cap = cv2.VideoCapture('rtsp://admin:123456@192.168.1.103:8080/H264?ch=1&subtype=0')
-def basic(pdf_name):
+def basic(pdf_name, orientation, perspective):
     url = 'http://192.168.1.103:8080/video'
     path = str(Path.home())
     path = path + "/Desktop/Mobile-to-PC-Scanner/"
     folder_name = "PLS"
     folder = os.path.join(path, folder_name)
     pdf_folder = os.path.join(folder, "pdf")
+    camera_image_folder = os.path.join(folder, "camera_image")
     file_exists = os.path.isdir(folder)
+    camera_image_exists = os.path.isdir(camera_image_folder)
     if(not file_exists):
         os.mkdir(folder)
     pdf_exists = os.path.isdir(pdf_folder)
     if(not pdf_exists):
         os.mkdir(pdf_folder)
+    if(not camera_image_exists):
+        os.mkdir(camera_image_folder)
     image_list = []
-    vid = cv2.VideoCapture(0)
-    img_count = len(os.listdir(folder))
+    vid = cv2.VideoCapture(url)
+    img_count = len(os.listdir(camera_image_folder))
     count_increase = img_count
     while(True):
         ret, frame = vid.read()
@@ -29,36 +33,40 @@ def basic(pdf_name):
         height = int(frame.shape[0] * (60/100))
 
         frame = cv2.resize(frame, (width,height),interpolation=cv2.INTER_AREA)
-        frame = cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE)
+        if(orientation == 'n'):
+            frame = cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE)
         for_display = frame.copy()
-        #cv2.drawContours(for_display, fr_con, index, (255, 0, 0), 5)
         cv2.imshow("video",for_display)
         key = cv2.waitKey(1)
         if  key==113:
             break
         if key == 32:
-            image_name = folder + "/scan_" +str(count_increase) +  ".jpg"
+            image_name = camera_image_folder + "/scan_" +str(count_increase) +  ".jpg"
             count_increase +=1
             cv2.imwrite(image_name,frame)
             image_list.append(frame)
     vid.release()
     cv2.destroyAllWindows()
-
+    if(len(image_list)==0):
+        print("No picture.")
+        exit()
     scan_image_list =[]
-
-    for image in image_list:
-        ima = process_image(image)
-        ima = Image.fromarray(ima)
-        scan_image_list.append(ima)
-
+    if(perspective == 'y'):
+        for image in image_list:
+            ima = process_image(image)
+            ima = Image.fromarray(ima)
+            scan_image_list.append(ima)
+    else:
+        for image in image_list:
+            image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+            ima = Image.fromarray(image)
+            scan_image_list.append(ima)
     first_image = scan_image_list[0]
     scan_image_list = scan_image_list[1:]
     pdf = pdf_folder +"/"+ pdf_name
     first_image.save(pdf, save_all = True, append_images = scan_image_list)
 
 
-import numpy as np
-import cv2
 # image = cv2.imread("/home/anju_chhetri/Desktop/scan_images/scan_image6.jpg")
 # image = cv2.resize(image, (700, 800))
 # returned_image = process_image(image)
@@ -136,6 +144,11 @@ def process_image(image):
 
 if __name__ == "__main__":
     parser  = argparse.ArgumentParser()
-    parser.add_argument("pdf_name", help = "Name of the pdf. Must include.pdf extension", type = str)
+    parser.add_argument("pdf_name", help = "Name of the pdf. Must include .pdf extension", type = str)
+    parser.add_argument("--o", help = "Rotate the display screen by 90 degree anti-clockwise (y/n)", default = "n",type = str)
+    parser.add_argument("--ps", help = "Apply Perspective Transfrom and scan effect (y/n)",default = "y",type = str)
     args = parser.parse_args()
-    basic(args.pdf_name)
+    if((args.o== 'y' or args.o=='n') and (args.ps== 'y' or args.ps=='n')):
+        basic(args.pdf_name, args.o, args.ps)
+    else:
+        print("Invalid argument")
