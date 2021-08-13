@@ -14,7 +14,7 @@ To run the program
 python3 Scanner.py your_pdf_name.pdf 
 ``` 
 
-To apply perspective transform the document in your image should have clear four edges. If the four edges are not perfectly detected in your image, scan effect is applied to your whole image without any perspective transform. 
+To apply perspective transform the document in your image should have clear four edges. If the four edges are not detected  perfectly in your image, scan effect is applied to your whole image without any perspective transform. 
 
 <br/> 
 
