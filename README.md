@@ -1,4 +1,4 @@
-It is a simple OpenCV based program which sends image from your phone to your PC, scans it and creates a pdf. It uses IP Webcam application to connect your phone camera to your PC. It is available [here](https://play.google.com/store/apps/details?id=com.pas.webcam&hl=en&gl=US) 
+It is a simple OpenCV based program which sends image from your phone to your PC, scans it and creates a pdf. It uses IP Webcam application to connect your phone camera to your PC. It is available [here](https://play.google.com/store/apps/details?id=com.pas.webcam&hl=en&gl=US) .
 
 <br/> 
 
