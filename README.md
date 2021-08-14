@@ -30,3 +30,4 @@ Required Libraries:
 * [Pillow](https://pillow.readthedocs.io/en/stable/reference/Image.html)
 * [numpy](https://numpy.org/install/)
 
+Space bar is used to take image(multiple images can be taken) and we can press 'q' to terminate the program. 
